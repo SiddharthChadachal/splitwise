@@ -1,6 +1,19 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+
+# The lines below are called `modelines`. See `:help modeline`
+# Feel free to remove those if you don't want/need to use them.
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj
+
 version: 2
 
 project_name: splitwise
+
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
 
 builds:
   - id: splitwise
@@ -17,18 +30,56 @@ builds:
       - amd64
       - arm64
 
+
 archives:
   - id: archives
     formats: [tar.gz, zip]
-    name_template: "{{ .Projectname }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    # this name template makes the OS and Arch compatible with the results of `uname`.
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    # use zip for windows archives
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+# builds:
+#   - id: splitwise
+#     main: ./cmd
+#     binary: splitwise
+#     ldflags:
+#       - -s -w
+#     env:
+#       - CGO_ENABLED=0
+#     goos:
+#       - linux 
+#       - darwin
+#     goarch:
+#       - amd64
+#       - arm64
+
+# archives:
+#   - id: archives
+#     formats: [tar.gz, zip]
+#     name_template: "{{ .Projectname }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 
 nfpms:
   - id: linux-packages
     package_name: splitwise
-    file_name_template: "{{ .Projectname }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    file_name_template:  >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
     vendor: "SiddharthChadachal"
     maintainer: "SiddharthChadachal"
-    homepage: "https://github.com/SiddharthChadachal/splitwise"
+    #homepage: "https://github.com/SiddharthChadachal/splitwise"
     description: "SPLITWISE: splits your bills wisely"
     license: "MIT"
     formats: [deb, rpm]
@@ -37,9 +88,27 @@ nfpms:
 checksum:
   name_template: "checksums.txt"
 
+# release:
+#   github:
+#     owner: SiddharthChadachal
+#     name: splitwise
+#   draft: false
+#   prerelease: false
+
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
 release:
-  github:
-    owner: SiddharthChadachal
-    name: splitwise
-  draft: false
-  prerelease: false
+  footer: >-
+
+    ---
+
+    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+
+
+    version: 2
