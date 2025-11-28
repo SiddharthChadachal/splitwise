@@ -40,6 +40,7 @@ checksum:
 release:
   github:
     owner: SiddharthChadachal
-    repo: splitwise
+    name: splitwise
+    tag: "{{ .CurrentTag }}"
     draft: false
-    pre-releases: false
+    pre-release: false
