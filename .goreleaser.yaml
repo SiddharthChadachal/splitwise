@@ -1,0 +1,45 @@
+version: 2
+
+project_name: splitwise
+
+builds:
+  - id: splitwise
+    main: ./cmd
+    binary: splitwise
+    ldflags:
+      - -s -w
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux 
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: archives
+    formats: [tar.gz, zip]
+    name_template: "{{ .Projectname }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+nfpms:
+  - id: linux-packages
+    package_name: splitwise
+    file_name_template: "{{ .Projectname }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    vendor: "SiddharthChadachal"
+    maintainer: "SiddharthChadachal"
+    homepage: "https://github.com/SiddharthChadachal/splitwise"
+    description: "SPLITWISE: splits your bills wisely"
+    licenses: "MIT"
+    formats: [deb, rpm]
+    bindir: "usr/bin"
+
+checksums:
+  name_template: "checksums.txt"
+
+releases:
+  github:
+    owner: SiddharthChadachal
+    repo: splitwise
+    draft: false
+    pre-releases: false
