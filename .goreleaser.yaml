@@ -86,14 +86,14 @@ nfpms:
     bindir: "usr/bin"
 
 checksum:
-  name_template: "checksums.txt"
+  name_template: "{{ .ProjectName }}_checksums.txt"
 
-# release:
-#   github:
-#     owner: SiddharthChadachal
-#     name: splitwise
-#   draft: false
-#   prerelease: false
+release:
+  github:
+    owner: SiddharthChadachal
+    name: splitwise
+  draft: false
+  prerelease: false
 
 
 changelog:
@@ -103,12 +103,12 @@ changelog:
       - "^docs:"
       - "^test:"
 
-release:
-  footer: >-
+# release:
+#   footer: >-
 
-    ---
+#     ---
 
-    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+#     Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
 
 
-    version: 2
+#     version: 2
