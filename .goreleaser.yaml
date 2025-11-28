@@ -41,6 +41,6 @@ release:
   github:
     owner: SiddharthChadachal
     name: splitwise
-    tag: "{{ .CurrentTag }}"
-    draft: false
-    pre-release: false
+  tag: "{{ .CurrentTag }}"
+  draft: false
+  pre-release: false
