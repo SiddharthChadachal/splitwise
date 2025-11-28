@@ -30,14 +30,14 @@ nfpms:
     maintainer: "SiddharthChadachal"
     homepage: "https://github.com/SiddharthChadachal/splitwise"
     description: "SPLITWISE: splits your bills wisely"
-    licenses: "MIT"
+    license: "MIT"
     formats: [deb, rpm]
     bindir: "usr/bin"
 
-checksums:
+checksum:
   name_template: "checksums.txt"
 
-releases:
+release:
   github:
     owner: SiddharthChadachal
     repo: splitwise
