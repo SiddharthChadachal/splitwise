@@ -17,13 +17,24 @@ jobs:
               with:
                 fetch-depth: 0
 
-            - name: Download .deb and .rpm assets from Releases
+            - name: Downloading .deb from Releases
               uses: robinraju/release-downloader@v1
               with:
                 repository: ${{ github.repository }}
-                tags: ${{ github.event.release.tag_name }}
-                pattern: "*.deb,*.rpm"
+                #tag:
+                fileName: '*.deb'
+                latest: true
                 allow-no-assets: false
+
+            - name: Downloading .rpm from Releases
+              uses: robinraju/release-downloader@v1
+              with:
+                repository: ${{ github.repository }}
+                #tag:
+                fileName: '*.rpm'
+                latest: true
+                allow-no-assets: false
+
 
             - name: Install tools
               run: |
