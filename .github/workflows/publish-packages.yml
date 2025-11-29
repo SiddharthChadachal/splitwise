@@ -1,9 +1,6 @@
 name: Publish Packages (RPM and APT) to GitHub Pages
 #testing new fix
 on:
-  push:
-    tags:
-      - "v*.*.*"
   release:
       types: [published]
 
@@ -23,8 +20,7 @@ jobs:
                 repository: ${{ github.repository }}
                 #tag:
                 fileName: '*.deb'
-                latest: true
-                allow-no-assets: false
+                tag: ${{ github.event.release.tag_name }}
 
             - name: Downloading .rpm from Releases
               uses: robinraju/release-downloader@v1
@@ -32,14 +28,13 @@ jobs:
                 repository: ${{ github.repository }}
                 #tag:
                 fileName: '*.rpm'
-                latest: true
-                allow-no-assets: false
+                tag: ${{ github.event.release.tag_name }}
 
 
             - name: Install tools
               run: |
                 sudo apt-get update
-                sudo apt-get install -y dpkg-dev gnupg createrepo-c
+                sudo apt-get install -y dpkg-dev gnupg createrepo_c
             
             - name: prepare repo structure
               run: | 
@@ -67,7 +62,7 @@ jobs:
 
             - name: Build RPM metadata
               run: |
-                createrepo-c repo/rpm
+                createrepo_c repo/rpm
 
             - name: Publish to Github Pages
               uses: peaceiris/actions-gh-pages@v3
