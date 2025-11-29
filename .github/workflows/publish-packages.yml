@@ -20,7 +20,8 @@ jobs:
                 repository: ${{ github.repository }}
                 #tag:
                 fileName: '*.deb'
-                tag: ${{ github.event.release.tag_name }}
+                preRelease: false
+                latest: true
 
             - name: Downloading .rpm from Releases
               uses: robinraju/release-downloader@v1
@@ -28,7 +29,8 @@ jobs:
                 repository: ${{ github.repository }}
                 #tag:
                 fileName: '*.rpm'
-                tag: ${{ github.event.release.tag_name }}
+                preRelease: false
+                latest: true
 
 
             - name: Install tools
