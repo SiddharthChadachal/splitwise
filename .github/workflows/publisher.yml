@@ -33,6 +33,11 @@ jobs:
           cp *.deb repo/apt/pool/ || true
           cp *.rpm repo/rpm/ || true
 
+      - name: DEBUG repo directory
+        run: |
+          echo "Listing repo folder:"
+          ls -aRl repo || echo "repo folder does NOT exist!"
+
       - name: Build APT metadata
         run: |
           cd repo/apt
