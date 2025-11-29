@@ -1,6 +1,9 @@
 name: Publisher
 # added new publisher workflow for releasing tags and versions
 on:
+  push:
+    tags:
+      - "v*.*.*"
   release:
     types: [published]
 
