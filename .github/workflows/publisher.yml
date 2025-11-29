@@ -1,5 +1,5 @@
 name: Publisher
-
+# added new publisher workflow for releasing tags and versions
 on:
   release:
     types: [published]
