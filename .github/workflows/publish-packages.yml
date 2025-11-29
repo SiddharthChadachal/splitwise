@@ -1,6 +1,9 @@
 name: Publish Packages (RPM and APT) to GitHub Pages
 #testing new fix
 on:
+  push:
+    tags:
+      - "v*.*.*"
   release:
       types: [published]
 
