@@ -1,0 +1,58 @@
+name: Publisher
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download .deb and .rpm assets from Release
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: ${{ github.repository }}
+          tag: ${{ github.event.release.tag_name }}
+          filePattern: "*.deb,*.rpm"
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dpkg-dev createrepo-c
+
+      - name: Prepare repo structure
+        run: |
+          mkdir -p repo/apt/pool
+          mkdir -p repo/rpm
+          cp *.deb repo/apt/pool/ || true
+          cp *.rpm repo/rpm/ || true
+
+      - name: Build APT metadata
+        run: |
+          cd repo/apt
+          mkdir -p dists/stable/main/binary-amd64
+          dpkg-scanpackages pool /dev/null > dists/stable/main/binary-amd64/Packages || true
+          gzip -kf dists/stable/main/binary-amd64/Packages || true
+          cat > Release <<EOF
+          Origin: ${GITHUB_REPOSITORY}
+          Label: splitwise
+          Suite: stable
+          Codename: stable
+          Architecture: amd64
+          EOF
+      - name: Build RPM metadata
+        run: |
+          createrepo-c repo/rpm || true
+
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: repo
+          publish_branch: gh-pages
