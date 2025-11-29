@@ -34,6 +34,11 @@ jobs:
                 mv *.deb repo/apt/pool
                 mv *.rpm repo/rpm
 
+            - name: DEBUG repo directory
+              run: |
+                echo "Listing repo folder:"
+                ls -aRl repo || echo "repo folder does NOT exist!"
+
             - name: Build APT metadata
               run: |
                 cd repo/apt
