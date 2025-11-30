@@ -1,14 +1,14 @@
-name: Publisher
-# added new publisher workflow for releasing tags and versions
+name: Publish Packages (APT & RPM)
+
 on:
-  push:
-    tags:
-      - "v*.*.*"
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ["Release"]      # MUST match GoReleaser workflow name
+    types:
+      - completed
 
 jobs:
   publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -17,14 +17,31 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download .deb and .rpm assets from Release
-        uses: actions/download-release-asset@v1
+      # Wait for Release to be available (avoid 404 race condition)
+      - name: Wait for GitHub Release to exist
+        run: |
+          TAG="${{ github.event.workflow_run.head_branch }}"
+          echo "Waiting for release of tag: $TAG"
+          for i in {1..12}; do
+            sleep 5
+            STATUS=$(curl -s \
+              "https://api.github.com/repos/${{ github.repository }}/releases/tags/$TAG" \
+              | jq -r '.id')
+            if [ "$STATUS" != "null" ]; then
+              echo "Release detected: $STATUS"
+              break
+            fi
+            echo "Still waiting..."
+          done
+
+      - name: Download all assets from Release
+        uses: robinraju/release-downloader@v1
         with:
           repository: ${{ github.repository }}
-          tag: ${{ github.event.release.tag_name }}
+          tag: ${{ github.event.workflow_run.head_branch }}
           filePattern: "*.deb,*.rpm"
 
-      - name: Install tools
+      - name: Install metadata tools
         run: |
           sudo apt-get update
           sudo apt-get install -y dpkg-dev createrepo-c
@@ -36,17 +53,12 @@ jobs:
           cp *.deb repo/apt/pool/ || true
           cp *.rpm repo/rpm/ || true
 
-      - name: DEBUG repo directory
-        run: |
-          echo "Listing repo folder:"
-          ls -aRl repo || echo "repo folder does NOT exist!"
-
       - name: Build APT metadata
         run: |
           cd repo/apt
           mkdir -p dists/stable/main/binary-amd64
-          dpkg-scanpackages pool /dev/null > dists/stable/main/binary-amd64/Packages || true
-          gzip -kf dists/stable/main/binary-amd64/Packages || true
+          dpkg-scanpackages pool > dists/stable/main/binary-amd64/Packages
+          gzip -kf dists/stable/main/binary-amd64/Packages
           cat > Release <<EOF
           Origin: ${GITHUB_REPOSITORY}
           Label: splitwise
@@ -54,9 +66,10 @@ jobs:
           Codename: stable
           Architecture: amd64
           EOF
+
       - name: Build RPM metadata
         run: |
-          createrepo-c repo/rpm || true
+          createrepo-c repo/rpm
 
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
