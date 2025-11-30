@@ -57,7 +57,7 @@ jobs:
                 dpkg-scanpackages pool /dev/null > dists/stable/main/binary-amd64/Packages || true
                 gzip -kf dists/stable/main/binary-amd64/Packages || true
                 # Create a Release file
-                cat > Release <<'EOF'
+                cat > dists/stable/Release <<'EOF'
                 Origin: ${{ github.repository }}
                 Label: splitwise
                 Suite: stable
