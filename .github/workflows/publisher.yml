@@ -39,7 +39,14 @@ jobs:
         with:
           repository: ${{ github.repository }}
           tag: ${{ github.event.workflow_run.head_branch }}
-          filePattern: "*.deb,*.rpm"
+          file: '*.deb'
+      
+      - name: Download all assets from Release
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: ${{ github.repository }}
+          tag: ${{ github.event.workflow_run.head_branch }}
+          file: '*.rpm'
 
       - name: Install metadata tools
         run: |
