@@ -1,13 +1,13 @@
 Package: splitwise
-Version: 0.2.2
+Version: 0.2.1
 Architecture: arm64
 Maintainer: SiddharthChadachal
 Installed-Size: 2048
 Filename: pool/splitwiseLinuxarm64.deb
-Size: 856634
-MD5sum: 8649a070082e8479b0c04e0374e517ac
-SHA1: c3748b41200ce8dd3a7490a28cdde53314337aba
-SHA256: 645bcf250876249510210a06977ac08227ed202314a9b9a7e82c1f1dd5cb53d7
+Size: 856638
+MD5sum: 695b4d02129343dfe2fcd815a55ad0d3
+SHA1: 4e91ae9b34181b4beb6030aecb64a6fe829daffa
+SHA256: 4a678e344ccdd64734273a7ab92a01f489799d4aaf490019d0256191feb5d019
 Priority: optional
 Homepage: https://github.com/SiddharthChadachal/splitwise
 Description: SPLITWISE: splits your bills wisely
