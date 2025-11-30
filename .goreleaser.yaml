@@ -83,6 +83,7 @@ nfpms:
     description: "SPLITWISE: splits your bills wisely"
     license: "MIT"
     formats: [deb, rpm]
+    architectures: [amd64, arm64]
     bindir: "usr/bin"
 
 checksum:
