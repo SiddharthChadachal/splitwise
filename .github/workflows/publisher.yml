@@ -69,7 +69,7 @@ jobs:
 
       - name: Build RPM metadata
         run: |
-          createrepo-c repo/rpm
+          createrepo_c repo/rpm
 
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
