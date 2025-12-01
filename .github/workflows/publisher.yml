@@ -66,10 +66,10 @@ jobs:
           mkdir -p dists/stable/main/binary-amd64
           mkdir -p dists/stable/main/binary-arm64
 
-          dpkg-scanpackages pool > dists/stable/main/binary-amd64/Packages
+          dpkg-scanpackages --arch amd64 pool > dists/stable/main/binary-amd64/Packages
           gzip -kf dists/stable/main/binary-amd64/Packages
 
-          dpkg-scanpackages pool > dists/stable/main/binary-arm64/Packages
+          dpkg-scanpackages --arch arm64 pool > dists/stable/main/binary-arm64/Packages
           gzip -kf dists/stable/main/binary-arm64/Packages
 
           cat > dists/stable/Release <<EOF
