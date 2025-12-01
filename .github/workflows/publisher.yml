@@ -64,14 +64,20 @@ jobs:
         run: |
           cd repo/apt
           mkdir -p dists/stable/main/binary-amd64
+          mkdir -p dists/stable/main/binary-arm64
+
           dpkg-scanpackages pool > dists/stable/main/binary-amd64/Packages
           gzip -kf dists/stable/main/binary-amd64/Packages
+
+          dpkg-scanpackages pool > dists/stable/main/binary-arm64/Packages
+          gzip -kf dists/stable/main/binary-arm64/Packages
+
           cat > dists/stable/Release <<EOF
           Origin: ${GITHUB_REPOSITORY}
           Label: splitwise
           Suite: stable
           Codename: stable
-          Architecture: amd64
+          Architecture: amd64 arm64
           EOF
 
       - name: Build RPM metadata
